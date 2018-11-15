@@ -1,3 +1,4 @@
+https://support.rackspace.com/how-to/installing-mysql-server-on-ubuntu/
 VDS
 IP сервера: 176.57.220.102
 
@@ -5,6 +6,24 @@ IP сервера: 176.57.220.102
 
 Пароль: bWSS4Qgu
 
+
+Start the mysql shell
+mysqladmin -p -u root version
+or
+/usr/bin/mysql -u root -p
+
+
+
 mysql user
 mysql -u root -p
 pw: proxyserverdb
+
+Start the MySQL service
+systemctl start mysql
+
+Launch at reboot
+systemctl enable mysql
+
+http://176.57.220.102/phpmyadmin/
+root
+proxyserverdb
