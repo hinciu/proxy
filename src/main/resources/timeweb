@@ -1,0 +1,10 @@
+VDS
+IP сервера: 176.57.220.102
+
+Имя пользователя: root
+
+Пароль: bWSS4Qgu
+
+mysql user
+mysql -u root -p
+pw: proxyserverdb
