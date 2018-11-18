@@ -3,6 +3,7 @@ package com.proxy.parser;
 import com.proxy.db.service.ProxyService;
 import com.proxy.utils.MatcherUtils;
 import com.proxy.utils.WaitUtils;
+
 import org.openqa.selenium.*;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,18 +11,13 @@ import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
-import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
-//
-//show.full.list.button=//input[@value='Show Full List']
-//        select.elite=//select[@id='Filter']/.//option[text()="Elite"]
-//        filter.button=//input[@value='Filter']
-//        pagination.pages=//div[@class='pagenavi']/.//a
+
 @Component
 public class ProxyParser {
-
     @Autowired
     Environment env;
 
@@ -30,6 +26,7 @@ public class ProxyParser {
 
     public List<String> collectProxy() {
         WebDriver driver = new ChromeDriver();
+        driver.manage().window().maximize();
         try {
             List<String> result = new ArrayList<>();
             System.setProperty("webdriver.chrome.driver", env.getProperty("webdriver.chrome.driver"));
@@ -41,22 +38,21 @@ public class ProxyParser {
 
             driver.get(env.getProperty("proxy.resource.url"));
             WaitUtils.waitUntilCondition(() -> driver.findElement(By.xpath(showFullList)).isDisplayed(), true, 30);
-            driver.findElement(By.xpath(showFullList)).click();
+            WebElement showElement = driver.findElement(By.xpath(showFullList));
+            ((JavascriptExecutor) driver).executeScript("arguments[0].scrollIntoView(true);", showElement);
+            showElement.click();
             WaitUtils.waitUntilCondition(() -> driver.findElement(By.xpath(selectEliteButton)).isDisplayed(), true, 30);
             driver.findElement(By.xpath(selectEliteButton)).click();
             WaitUtils.waitUntilCondition(() -> driver.findElement(By.xpath(filterButton)).isDisplayed(), true, 30);
             driver.findElement(By.xpath(filterButton)).click();
-
-
             int pagesSize = driver.findElements(By.xpath(pagination)).size();
-
             List<WebElement> firstPageIpElements = driver.findElements(By.xpath(env.getProperty("ip.element.path")));
             List<WebElement> firstPagePortElements = driver.findElements(By.xpath(env.getProperty("port.element.path")));
 
             result.addAll(collect(firstPageIpElements, firstPagePortElements));
             for (int i = 1; i < pagesSize - 1; i++) {
                 List<WebElement> page = driver.findElements(By.xpath(pagination));
-                ((JavascriptExecutor) driver).executeScript("window.scrollTo(0,+document.body.scrollHeight);");
+                ((JavascriptExecutor) driver).executeScript("arguments[0].scrollIntoView(true);", page.get(i));
                 page.get(i).click();
                 WaitUtils.waitUntilCondition(() -> driver.findElement(By.xpath(filterButton)).isDisplayed(), true, 30);
                 firstPageIpElements = driver.findElements(By.xpath(env.getProperty("ip.element.path")));
@@ -66,19 +62,11 @@ public class ProxyParser {
             driver.quit();
             return result;
         } catch (Exception e) {
+            e.printStackTrace();
             driver.quit();
-            return new ArrayList<>();
-        }
-
+            return Arrays.asList("Error.");
     }
 
-    private boolean checkIfNextButtonExists(WebDriver driver, String nextButtonPath) {
-        try {
-            driver.findElement(By.xpath(nextButtonPath));
-            return true;
-        } catch (NoSuchElementException e) {
-            return false;
-        }
     }
 
     private List<String> collect(List<WebElement> elementsIp, List<WebElement> elementsPort) {

@@ -8,7 +8,7 @@ import com.proxy.driver.DriverHolder;
 import com.proxy.driver.DriverInitializer;
 import com.proxy.parser.ProxyParser;
 import com.proxy.utils.UIUtils;
-import org.apache.log4j.Logger;
+
 import org.openqa.selenium.WebDriver;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -24,8 +24,8 @@ import java.util.List;
 
 
 @Component
-public class App{
-    final static Logger logger = Logger.getLogger(App.class);
+public class App {
+
     private JPanel panel;
     private JButton getProxyList;
     private JList uiProxyList;
@@ -65,15 +65,12 @@ public class App{
         getProxyList.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                try {
-                    leadForm.setVisible(false);
-                    proxyList = proxyParser.collectProxy();
-                    String[] proxyArr = proxyList.toArray(new String[proxyList.size()]);
-                    uiProxyList.setListData(proxyArr);
-                    uiProxyList.setSelectionMode(DefaultListSelectionModel.SINGLE_SELECTION);
-                } catch (Exception ex) {
-                    logger.error(ex);
-                }
+                leadForm.setVisible(false);
+                proxyList = proxyParser.collectProxy();
+                String[] proxyArr = proxyList.toArray(new String[proxyList.size()]);
+                uiProxyList.setListData(proxyArr);
+                uiProxyList.setSelectionMode(DefaultListSelectionModel.SINGLE_SELECTION);
+
 
             }
         });
@@ -92,7 +89,7 @@ public class App{
                         doAction(proxy);
                     }
                 } catch (Exception ex) {
-                    logger.error(ex);
+                    System.out.println(e);
                 }
 
 
@@ -108,7 +105,7 @@ public class App{
                         emailField.setText("");
                     }
                 } catch (Exception ex) {
-                    logger.error(e);
+                    System.out.println(e);
                 }
 
             }
@@ -145,7 +142,6 @@ public class App{
                         leadForm.setVisible(false);
                         proxyService.deleteProxy(proxy);
                         driverHolder.quitAll();
-                        driverHolder.quitAll();
                     }
                 });
                 submitLeadButton.addActionListener(new ActionListener() {
@@ -157,9 +153,8 @@ public class App{
                         if (offer.equalsIgnoreCase("") || email.equalsIgnoreCase("")) {
                             JOptionPane.showMessageDialog(null, "Please specify required fields");
                         } else {
-                            int updateResult = proxyActions.saveLead(offer, email, state, proxy);
+                            proxyActions.saveLead(offer, email, state, proxy);
                             proxyService.saveUsedEmail(email);
-//                            JOptionPane.showMessageDialog(null, "inserted " + updateResult + " rows");
                             leadForm.setVisible(false);
                             driverHolder.quitAll();
                         }
@@ -180,7 +175,8 @@ public class App{
     public JPanel getPanel() {
         return panel;
     }
-    public void init (){
+
+    public void init() {
         leadForm.setVisible(false);
         UIUtils.setLeadStates(this.leadState);
     }

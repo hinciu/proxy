@@ -5,7 +5,7 @@ import com.proxy.db.config.Config;
 import com.proxy.db.service.ProxyService;
 
 import com.proxy.parser.ProxyParser;
-import org.apache.log4j.Logger;
+
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 

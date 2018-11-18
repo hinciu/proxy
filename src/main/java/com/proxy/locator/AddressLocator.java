@@ -24,17 +24,6 @@ public class AddressLocator {
     @Autowired
     ObjectMapper om;
 
-//    private Properties p = new Properties();
-//
-//    public AddressLocator()  {
-//        om = new ObjectMapper().configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
-//        try {
-//            p.load(new FileInputStream("resources/ui.properties"));
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        }
-//    }
-
     public IpLocation locateAddress(String address) throws IOException {
         String addressToLocate = MatcherUtils.getMatchValue("\\d+.\\d+.\\d+.\\d+", address, 0);
         String api = env.getProperty("ip.locator.url") + addressToLocate;
