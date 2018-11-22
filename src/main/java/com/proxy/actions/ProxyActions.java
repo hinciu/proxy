@@ -55,6 +55,11 @@ public class ProxyActions {
 
     public void openAnonymityChecker(WebDriver driver) {
         driver.get(env.getProperty("anonymity.url"));
+        ((JavascriptExecutor)driver).executeScript("window.open('https://www.myip.com','_blank');");
+        ((JavascriptExecutor)driver).executeScript("window.open('https://whatismyipaddress.com','_blank');");
+        ((JavascriptExecutor)driver).executeScript("window.open('https://www.iplocation.net/find-ip-address','_blank');");
+        ((JavascriptExecutor)driver).executeScript("window.open('https://www.find-ip.net/proxy-checker','_blank');");
+        ((JavascriptExecutor)driver).executeScript("window.open('https://2ip.ru/geoip/','_blank');");
     }
 
     public boolean openMapsIfAgree(String location, String proxy) {
