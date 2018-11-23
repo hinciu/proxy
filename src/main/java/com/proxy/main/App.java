@@ -20,6 +20,7 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
+import java.util.Arrays;
 import java.util.List;
 
 
@@ -40,6 +41,8 @@ public class App {
     private JButton cancel;
     private JButton getProxy;
     private JTextArea getProxyValue;
+    private JButton saveBlack;
+    private JTextArea savePath;
 
 
     @Autowired
@@ -117,6 +120,14 @@ public class App {
                 doAction(proxy);
             }
         });
+        saveBlack.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                List<String> mails = Arrays.asList(savePath.getText().split("\\n"));
+                proxyActions.saveBlackList(mails);
+                savePath.setText("");
+            }
+        });
     }
 
     private void doAction(String proxy) {
@@ -158,6 +169,8 @@ public class App {
                             leadForm.setVisible(false);
                             driverHolder.quitAll();
                         }
+                        offerField.setText("");
+                        emailField.setText("");
 
                     }
                 });

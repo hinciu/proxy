@@ -39,7 +39,7 @@ public class ProxyParser {
             driver.get(env.getProperty("proxy.resource.url"));
             WaitUtils.waitUntilCondition(() -> driver.findElement(By.xpath(showFullList)).isDisplayed(), true, 30);
             WebElement showElement = driver.findElement(By.xpath(showFullList));
-            ((JavascriptExecutor) driver).executeScript("arguments[0].scrollIntoView(true);", showElement);
+//            ((JavascriptExecutor) driver).executeScript("arguments[0].scrollIntoView(true);", showElement);
             showElement.click();
             WaitUtils.waitUntilCondition(() -> driver.findElement(By.xpath(selectEliteButton)).isDisplayed(), true, 30);
             driver.findElement(By.xpath(selectEliteButton)).click();

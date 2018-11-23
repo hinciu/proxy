@@ -69,6 +69,10 @@ public class ProxyService {
         return jdbcTemplate.query("SELECT * FROM `mails` WHERE  EMAIL='" + email + "'", new EmailMapper());
     }
 
+    public List<EmailModel> getEmailFromBlackTable(String email) {
+        return jdbcTemplate.query("SELECT * FROM `black` WHERE  EMAIL='" + email + "'", new EmailMapper());
+    }
+
     @Transactional(isolation = Isolation.SERIALIZABLE)
     public void clearProcessedTable() {
         LocalDate date = LocalDate.now().minusDays(Integer.parseInt(env.getProperty("clear.period.days")));
@@ -78,6 +82,10 @@ public class ProxyService {
 
     public void saveUsedEmail(String email) {
         jdbcTemplate.execute("INSERT INTO `mails` (`email`) VALUES ('" + email + "');");
+    }
+
+    public void saveBlackListEmail(String email) {
+        jdbcTemplate.execute("INSERT INTO `black` (`EMAIL`) VALUES ('" + email + "');");
     }
 
     private String getInsertQuery(String ip) {
@@ -98,14 +106,5 @@ public class ProxyService {
         return DELETE.replaceAll("\\{ip\\}", ip)
                 .replaceAll("\\{user\\}", env.getProperty("user"));
 
-    }
-
-    public  void test() {
-        int i = 0;
-        while (true){
-            String s = String.valueOf(i++);
-            jdbcTemplate.execute(getInsertQuery(s));
-            System.out.println(s);
-        }
     }
 }

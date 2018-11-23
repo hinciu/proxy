@@ -16,8 +16,12 @@ import org.openqa.selenium.WebDriver;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
+import org.springframework.util.FileSystemUtils;
 
 import javax.swing.*;
+import java.io.BufferedReader;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
 import java.io.IOException;
 import java.util.List;
 import java.util.StringJoiner;
@@ -55,11 +59,11 @@ public class ProxyActions {
 
     public void openAnonymityChecker(WebDriver driver) {
         driver.get(env.getProperty("anonymity.url"));
-        ((JavascriptExecutor)driver).executeScript("window.open('https://www.myip.com','_blank');");
-        ((JavascriptExecutor)driver).executeScript("window.open('https://whatismyipaddress.com','_blank');");
-        ((JavascriptExecutor)driver).executeScript("window.open('https://www.iplocation.net/find-ip-address','_blank');");
-        ((JavascriptExecutor)driver).executeScript("window.open('https://www.find-ip.net/proxy-checker','_blank');");
-        ((JavascriptExecutor)driver).executeScript("window.open('https://2ip.ru/geoip/','_blank');");
+        ((JavascriptExecutor) driver).executeScript("window.open('https://www.myip.com','_blank');");
+        ((JavascriptExecutor) driver).executeScript("window.open('https://whatismyipaddress.com','_blank');");
+        ((JavascriptExecutor) driver).executeScript("window.open('https://www.iplocation.net/find-ip-address','_blank');");
+        ((JavascriptExecutor) driver).executeScript("window.open('https://www.find-ip.net/proxy-checker','_blank');");
+        ((JavascriptExecutor) driver).executeScript("window.open('https://2ip.ru/geoip/','_blank');");
     }
 
     public boolean openMapsIfAgree(String location, String proxy) {
@@ -111,7 +115,11 @@ public class ProxyActions {
         StringJoiner joiner = new StringJoiner("\n");
         List<ProxyModel> usage = proxyService.getEmail(email);
         List<EmailModel> usage2 = proxyService.getEmailFromEmailsTable(email);
-        if (usage.isEmpty() && usage2.isEmpty()) {
+        List<EmailModel> usage3 = proxyService.getEmailFromBlackTable(email);
+        if (!usage3.isEmpty()) {
+            JOptionPane.showMessageDialog(null, "EMAIL IN BLACK LIST");
+            return false;
+        }else if (usage.isEmpty() && usage2.isEmpty()) {
             JOptionPane.showMessageDialog(null, "NOT USED");
             return true;
         } else {
@@ -119,5 +127,11 @@ public class ProxyActions {
             return false;
         }
 
+    }
+
+    public void saveBlackList(List<String> mails) {
+        for (String mail : mails){
+            proxyService.saveBlackListEmail(mail.trim());
+        }
     }
 }
