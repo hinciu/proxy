@@ -58,12 +58,14 @@ public class ProxyActions {
     }
 
     public void openAnonymityChecker(WebDriver driver) {
-        driver.get(env.getProperty("anonymity.url"));
+        driver.get("chrome://settings/clearBrowserData?search=browsing+");
+        ((JavascriptExecutor) driver).executeScript("window.open('" + env.getProperty("anonymity.url") + "','_blank');");
         ((JavascriptExecutor) driver).executeScript("window.open('https://www.myip.com','_blank');");
         ((JavascriptExecutor) driver).executeScript("window.open('https://whatismyipaddress.com','_blank');");
         ((JavascriptExecutor) driver).executeScript("window.open('https://www.iplocation.net/find-ip-address','_blank');");
         ((JavascriptExecutor) driver).executeScript("window.open('https://www.find-ip.net/proxy-checker','_blank');");
         ((JavascriptExecutor) driver).executeScript("window.open('https://2ip.ru/geoip/','_blank');");
+
     }
 
     public boolean openMapsIfAgree(String location, String proxy) {
@@ -119,7 +121,7 @@ public class ProxyActions {
         if (!usage3.isEmpty()) {
             JOptionPane.showMessageDialog(null, "EMAIL IN BLACK LIST");
             return false;
-        }else if (usage.isEmpty() && usage2.isEmpty()) {
+        } else if (usage.isEmpty() && usage2.isEmpty()) {
             JOptionPane.showMessageDialog(null, "NOT USED");
             return true;
         } else {
@@ -130,7 +132,7 @@ public class ProxyActions {
     }
 
     public void saveBlackList(List<String> mails) {
-        for (String mail : mails){
+        for (String mail : mails) {
             proxyService.saveBlackListEmail(mail.trim());
         }
     }
